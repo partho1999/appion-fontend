@@ -253,9 +253,6 @@ export function AppointmentsPage() {
                           <User className="h-5 w-5" />
                           Dr. {appointment.doctor_name}
                         </>
-                      )\
-                          Dr. {appointment.doctor_name}
-                        </>
                       ) : (
                         <>
                           <User className="h-5 w-5" />
@@ -280,35 +277,35 @@ export function AppointmentsPage() {
                   {getStatusBadge(appointment.status)}
                 </div>
               </CardHeader>
-              <CardContent>\
-                {appointment.symptoms && (\
-                  <div className="mb-4">\
-                    <h4 className="font-medium text-sm text-gray-700 mb-1\">Symptoms</h4>\
-                    <p className=\"text-sm text-gray-600\">{appointment.symptoms}</p>\
-                  </div>\
-                )}\
-                {appointment.notes && (\
-                  <div className=\"mb-4">\
-                    <h4 className="font-medium text-sm text-gray-700 mb-1\">Notes</h4>\
-                    <p className=\"text-sm text-gray-600\">{appointment.notes}</p>\
-                  </div>\
+              <CardContent>
+                {appointment.symptoms && (
+                  <div className="mb-4">
+                    <h4 className="font-medium text-sm text-gray-700 mb-1">Symptoms</h4>
+                    <p className="text-sm text-gray-600">{appointment.symptoms}</p>
+                  </div>
                 )}
-\
-                {/* Action Buttons */}\
-                <div className="flex gap-2 mt-4">\
-                  {user?.role === "doctor" && appointment.status === "pending" && (\
-                    <>\
-                      <Button size="sm" onClick={() => updateAppointmentStatus(appointment.id, "confirmed")}>\
+                {appointment.notes && (
+                  <div className="mb-4">
+                    <h4 className="font-medium text-sm text-gray-700 mb-1">Notes</h4>
+                    <p className="text-sm text-gray-600">{appointment.notes}</p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 mt-4">
+                  {user?.role === "doctor" && appointment.status === "pending" && (
+                    <>
+                      <Button size="sm" onClick={() => updateAppointmentStatus(appointment.id, "confirmed")}>
                         Confirm
-                      </Button>\
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => updateAppointmentStatus(appointment.id, "cancelled")}
-                      >\
+                      >
                         Decline
-                      </Button>\
-                    </>\
+                      </Button>
+                    </>
                   )}
 
                   {user?.role === "doctor" && appointment.status === "confirmed" && (
@@ -346,38 +343,33 @@ export function AppointmentsPage() {
                   )}
                 </div>
               </CardContent>
-  </Card>
+            </Card>
           ))
-        )
-}
-</div>
+        )}
+      </div>
 
-{
-  /* Pagination */
-}
-{
-  totalPages > 1 && (
-    <div className="flex justify-center gap-2">
-      <Button
-        variant="outline"
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        disabled={currentPage === 1}
-      >
-        Previous
-      </Button>
-      <span className="flex items-center px-4">
-        Page {currentPage} of {totalPages}
-      </span>
-      <Button
-        variant="outline"
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </Button>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <span className="flex items-center px-4">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
-  )
-}
-</div>
   )
 }

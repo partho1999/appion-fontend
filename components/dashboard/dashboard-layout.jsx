@@ -108,14 +108,16 @@ export function DashboardLayout({ children }) {
                     <Avatar className="h-6 w-6">
                       <AvatarImage src={user.profile_image || "/placeholder.svg"} />
                       <AvatarFallback>
-                        {user.full_name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
+                        {(user.full_name && typeof user.full_name === "string")
+                          ? user.full_name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                          : "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col items-start">
-                      <span className="text-sm font-medium">{user.full_name}</span>
+                      <span className="text-sm font-medium">{user.full_name || "Unknown User"}</span>
                       <span className="text-xs text-gray-500 capitalize">{user.role}</span>
                     </div>
                   </SidebarMenuButton>

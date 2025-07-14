@@ -52,8 +52,8 @@ export function AuthProvider({ children }) {
 
       if (profileResponse.ok) {
         const userData = await profileResponse.json()
-        setUser(userData)
-        localStorage.setItem("user", JSON.stringify(userData))
+        setUser(userData.data)
+        localStorage.setItem("user", JSON.stringify(userData.data))
       }
 
       toast({

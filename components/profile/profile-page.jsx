@@ -10,6 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { toast } from "@/hooks/use-toast"
 import { Upload, Loader2, User, Mail, Phone } from "lucide-react"
 
+function getProfileImageUrl(profile_image) {
+  if (!profile_image) return "/placeholder.svg";
+  const cleanPath = profile_image.replace(/^\.{1,2}[\\/]/, "").replace(/\\/g, "/");
+  return `http://localhost:8000/${cleanPath}`;
+}
+
 export function ProfilePage() {
   const { user, token, updateUser } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -194,7 +200,7 @@ export function ProfilePage() {
           <CardContent className="space-y-4">
             <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={user.profile_image || "/placeholder.svg"} />
+                <AvatarImage src={getProfileImageUrl(user.profile_image)} />
                 <AvatarFallback className="text-lg">
                   {user.full_name
                     .split(" ")
