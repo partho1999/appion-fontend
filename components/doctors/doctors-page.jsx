@@ -12,6 +12,12 @@ import { Search, MapPin, Clock, Calendar } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
 
+function getProfileImageUrl(profile_image) {
+  if (!profile_image) return "/placeholder.svg";
+  const cleanPath = profile_image.replace(/^\.{1,2}[\\/]/, "").replace(/\\/g, "/");
+  return `http://localhost:8000/${cleanPath}`;
+}
+
 export function DoctorsPage() {
   const { user, token } = useAuth()
   const [doctors, setDoctors] = useState([])
@@ -48,8 +54,12 @@ export function DoctorsPage() {
 
       if (response.ok) {
         const data = await response.json()
-        setDoctors(data.doctors || data)
-        setTotalPages(Math.ceil((data.total || data.length) / 10))
+        // Support { data: [...] } or { doctors: [...] } or array
+        const doctorsArray = Array.isArray(data.data)
+          ? data.data
+          : (Array.isArray(data.doctors) ? data.doctors : (Array.isArray(data) ? data : []));
+        setDoctors(doctorsArray)
+        setTotalPages(Math.ceil((data.total || doctorsArray.length) / 10))
       }
     } catch (error) {
       toast({
@@ -187,7 +197,7 @@ export function DoctorsPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={doctor.profile_image || "/placeholder.svg"} />
+                      <AvatarImage src={getProfileImageUrl(doctor.profile_image)} />
                       <AvatarFallback>
                         {doctor.full_name
                           .split(" ")

@@ -145,14 +145,16 @@ export function AppointmentsPage() {
     )
   }
 
-  const filteredAppointments = appointments.filter((appointment) => {
-    const searchLower = searchTerm.toLowerCase()
-    const doctorName = appointment.doctor_name?.toLowerCase() || ""
-    const patientName = appointment.patient_name?.toLowerCase() || ""
-    const symptoms = appointment.symptoms?.toLowerCase() || ""
+  const filteredAppointments = Array.isArray(appointments)
+    ? appointments.filter((appointment) => {
+        const searchLower = searchTerm.toLowerCase()
+        const doctorName = appointment.doctor_name?.toLowerCase() || ""
+        const patientName = appointment.patient_name?.toLowerCase() || ""
+        const symptoms = appointment.symptoms?.toLowerCase() || ""
 
-    return doctorName.includes(searchLower) || patientName.includes(searchLower) || symptoms.includes(searchLower)
-  })
+        return doctorName.includes(searchLower) || patientName.includes(searchLower) || symptoms.includes(searchLower)
+      })
+    : []
 
   if (loading) {
     return (
