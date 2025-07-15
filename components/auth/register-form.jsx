@@ -39,6 +39,13 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [mobileError, setMobileError] = useState("")
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([])
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState([])
+  const [customSlot, setCustomSlot] = useState("")
+  // Add these for time slot picker
+  const [startTime, setStartTime] = useState("")
+  const [endTime, setEndTime] = useState("")
+  const [slotError, setSlotError] = useState("")
 
   useEffect(() => {
     fetchDivisions()
@@ -98,6 +105,27 @@ export function RegisterForm() {
         variant: "destructive",
       })
     }
+  }
+
+  const handleAddCustomSlot = () => {
+    setSlotError("")
+    if (!startTime || !endTime) {
+      setSlotError("Please select both start and end time.")
+      return
+    }
+    if (startTime >= endTime) {
+      setSlotError("End time must be after start time.")
+      return
+    }
+    const slot = `${startTime}-${endTime}`
+    if (availableTimeSlots.includes(slot)) {
+      setSlotError("This slot already exists.")
+      return
+    }
+    setAvailableTimeSlots([...availableTimeSlots, slot])
+    setSelectedTimeSlots([...selectedTimeSlots, slot])
+    setStartTime("")
+    setEndTime("")
   }
 
   const handleInputChange = (name, value) => {
@@ -161,7 +189,7 @@ export function RegisterForm() {
         submitData.append("license_number", formData.license_number)
         submitData.append("experience_years", formData.experience_years)
         submitData.append("consultation_fee", formData.consultation_fee)
-        submitData.append("available_timeslots", formData.available_timeslots)
+        submitData.append("available_timeslots", selectedTimeSlots.join(", "))
         submitData.append("specialization", formData.specialization)
       }
 
@@ -239,7 +267,7 @@ export function RegisterForm() {
                 <Label htmlFor="mobile">Mobile Number</Label>
                 <Input
                   id="mobile"
-                  placeholder="+8801712345678"
+                  placeholder="Enter your phone number"
                   value={formData.mobile}
                   onChange={(e) => handleInputChange("mobile", e.target.value)}
                   required
@@ -406,17 +434,55 @@ export function RegisterForm() {
                 </div>
               </div>
 
+              {/* Available Time Slots Multi-Select */}
               <div className="space-y-2">
-                <Label htmlFor="available_timeslots">Available Time Slots</Label>
-                <Input
-                  id="available_timeslots"
-                  placeholder="e.g., 09:00-12:00,14:00-17:00"
-                  value={formData.available_timeslots}
-                  onChange={(e) => handleInputChange("available_timeslots", e.target.value)}
-                  required
-                />
+                <Label>Available Time Slots</Label>
+                <div className="flex flex-wrap gap-2">
+                  {availableTimeSlots.map((slot) => (
+                    <label key={slot} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value={slot}
+                        checked={selectedTimeSlots.includes(slot)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedTimeSlots([...selectedTimeSlots, slot])
+                          } else {
+                            setSelectedTimeSlots(selectedTimeSlots.filter((s) => s !== slot))
+                          }
+                        }}
+                      />
+                      <span>{slot}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className="flex mt-2 gap-2 items-end">
+                  <div>
+                    <Label className="block text-xs">Start</Label>
+                    <input
+                      type="time"
+                      className="border rounded px-2 py-1"
+                      value={startTime}
+                      onChange={e => setStartTime(e.target.value)}
+                    />
+                  </div>
+                  <span className="pb-2">-</span>
+                  <div>
+                    <Label className="block text-xs">End</Label>
+                    <input
+                      type="time"
+                      className="border rounded px-2 py-1"
+                      value={endTime}
+                      onChange={e => setEndTime(e.target.value)}
+                    />
+                  </div>
+                  <Button type="button" onClick={handleAddCustomSlot}>
+                    Add
+                  </Button>
+                </div>
+                {slotError && <p className="text-xs text-red-500">{slotError}</p>}
                 <p className="text-xs text-gray-500">
-                  Format: HH:MM-HH:MM,HH:MM-HH:MM (comma-separated for multiple slots)
+                  Select one or more time slots, or add custom using the selectors. Multiple values will be separated by commas.
                 </p>
               </div>
             </div>

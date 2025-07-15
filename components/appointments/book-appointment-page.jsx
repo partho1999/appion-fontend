@@ -82,7 +82,7 @@ export function BookAppointmentPage() {
 
       if (response.ok) {
         const data = await response.json()
-        setDoctors(data)
+        setDoctors(data.data)
         if (preselectedDoctorId) {
           const foundDoctor = data.find((doc) => doc.id.toString() === preselectedDoctorId)
           if (foundDoctor) {

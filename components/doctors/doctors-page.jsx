@@ -55,10 +55,10 @@ export function DoctorsPage() {
       if (response.ok) {
         const data = await response.json()
         // Support { data: [...] } or { doctors: [...] } or array
-        const doctorsArray = Array.isArray(data.data)
-          ? data.data
-          : (Array.isArray(data.doctors) ? data.doctors : (Array.isArray(data) ? data : []));
-        setDoctors(doctorsArray)
+        // const doctorsArray = Array.isArray(data.data)
+        //   ? data.data
+        //   : (Array.isArray(data.doctors) ? data.doctors : (Array.isArray(data) ? data : []));
+        setDoctors(data.data)
         setTotalPages(Math.ceil((data.total || doctorsArray.length) / 10))
       }
     } catch (error) {
@@ -207,7 +207,7 @@ export function DoctorsPage() {
                     </Avatar>
                     <div>
                       <CardTitle className="text-lg">Dr. {doctor.full_name}</CardTitle>
-                      <CardDescription>{doctor.specialization || "General Practitioner"}</CardDescription>
+                      <CardDescription>{doctor.specialization}</CardDescription>
                     </div>
                   </div>
                   <Badge variant={doctor.is_active ? "default" : "secondary"}>
