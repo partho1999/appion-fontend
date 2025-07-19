@@ -44,6 +44,7 @@ export function AppointmentsPage() {
         limit: "10",
       })
 
+      // Only add status parameter if not 'all'
       if (statusFilter !== "all") {
         params.append("status", statusFilter)
       }
@@ -55,9 +56,23 @@ export function AppointmentsPage() {
       })
 
       if (response.ok) {
-        const data = await response.json()
-        setAppointments(data.appointments || data)
-        setTotalPages(Math.ceil((data.total || data.length) / 10))
+        const data = await response.json();
+        console.log("Appointments API response:", data); // Debug log
+
+        let appointmentsArray = [];
+        if (Array.isArray(data)) {
+          appointmentsArray = data;
+        } else if (Array.isArray(data.appointments)) {
+          appointmentsArray = data.appointments;
+        } else if (Array.isArray(data.data)) {
+          appointmentsArray = data.data;
+        } else if (Array.isArray(data.results)) {
+          appointmentsArray = data.results;
+        } else if (data.data && Array.isArray(data.data.appointments)) {
+          appointmentsArray = data.data.appointments;
+        }
+        setAppointments(appointmentsArray);
+        setTotalPages(Math.ceil((data.data?.total || appointmentsArray.length) / 10));
       }
     } catch (error) {
       toast({
@@ -155,6 +170,9 @@ export function AppointmentsPage() {
         return doctorName.includes(searchLower) || patientName.includes(searchLower) || symptoms.includes(searchLower)
       })
     : []
+
+  // Debug: print filteredAppointments
+  console.log("filteredAppointments:", filteredAppointments)
 
   if (loading) {
     return (

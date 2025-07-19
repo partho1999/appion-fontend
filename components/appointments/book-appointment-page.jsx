@@ -41,6 +41,24 @@ const generateTimeSlots = (timeRanges) => {
   return slots
 }
 
+// Helper function to format date as naive datetime string
+function formatNaiveDateTime(date) {
+  const pad = (n) => n.toString().padStart(2, '0');
+  return (
+    date.getFullYear() +
+    '-' +
+    pad(date.getMonth() + 1) +
+    '-' +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    ':' +
+    pad(date.getMinutes()) +
+    ':' +
+    pad(date.getSeconds())
+  );
+}
+
 export function BookAppointmentPage() {
   const { user, token } = useAuth()
   const router = useRouter()
@@ -55,6 +73,7 @@ export function BookAppointmentPage() {
   const [availableTimeslots, setAvailableTimeslots] = useState([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [notes, setNotes] = useState("")
 
   useEffect(() => {
     if (user && token) {
@@ -84,7 +103,7 @@ export function BookAppointmentPage() {
         const data = await response.json()
         setDoctors(data.data)
         if (preselectedDoctorId) {
-          const foundDoctor = data.find((doc) => doc.id.toString() === preselectedDoctorId)
+          const foundDoctor = data.data.find((doc) => doc.id.toString() === preselectedDoctorId)
           if (foundDoctor) {
             setSelectedDoctor(preselectedDoctorId)
           } else {
@@ -151,7 +170,7 @@ export function BookAppointmentPage() {
       const appointmentDateTime = new Date(selectedDate)
       appointmentDateTime.setHours(hour, minute, 0, 0)
 
-      const response = await fetch("http://localhost:8000/api/v1/appointments/book", {
+      const response = await fetch("http://localhost:8000/api/v1/appointments/", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -159,8 +178,9 @@ export function BookAppointmentPage() {
         },
         body: JSON.stringify({
           doctor_id: Number.parseInt(selectedDoctor),
-          appointment_datetime: appointmentDateTime.toISOString(),
+          appointment_datetime: formatNaiveDateTime(appointmentDateTime),
           symptoms: symptoms,
+          notes: notes,
         }),
       })
 
@@ -287,6 +307,16 @@ export function BookAppointmentPage() {
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
                 required
+              />
+            </div>
+            {/* Notes */}
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Input
+                id="notes"
+                placeholder="Any additional notes (optional)"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
               />
             </div>
           </CardContent>

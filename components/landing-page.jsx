@@ -113,9 +113,9 @@ export function LandingPage() {
                 <CardDescription className="mb-4">
                   Book appointments, manage health records, and track your medical history
                 </CardDescription>
-                <Button asChild>
+                {/* <Button asChild>
                   <Link href="/auth/register?role=patient">Register as Patient</Link>
-                </Button>
+                </Button> */}
               </CardHeader>
             </Card>
 
@@ -126,9 +126,9 @@ export function LandingPage() {
                 <CardDescription className="mb-4">
                   Manage your schedule, view appointments, and provide quality care
                 </CardDescription>
-                <Button asChild>
+                {/* <Button asChild>
                   <Link href="/auth/register?role=doctor">Register as Doctor</Link>
-                </Button>
+                </Button> */}
               </CardHeader>
             </Card>
 
@@ -139,9 +139,9 @@ export function LandingPage() {
                 <CardDescription className="mb-4">
                   Oversee operations, generate reports, and manage the entire system
                 </CardDescription>
-                <Button asChild>
+                {/* <Button asChild>
                   <Link href="/auth/register?role=admin">Register as Admin</Link>
-                </Button>
+                </Button> */}
               </CardHeader>
             </Card>
           </div>
